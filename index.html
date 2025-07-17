@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سبحة صدقة جارية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /*
+        **********************************************************
+        ** بداية أكواد CSS (التصميم)                 **
+        **********************************************************
+        */
+        body {
+            font-family: 'Amiri', serif;
+            background-color: #f0f8f0;
+            color: #333;
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-start;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            background-image: url('quran_bg.jpg'); /* استبدل quran_bg.jpg باسم ملف صورتك */
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.5); /* شفافية أكبر للـ overlay */
+            z-index: -1;
+        }
+
+        /* تنسيق القائمة الجانبية (Sidebar) */
+        .sidebar {
+            height: 100%;
+            width: 0; /* مخفية في البداية */
+            position: fixed;
+            z-index: 10;
+            top: 0;
+            right: 0; /* تظهر من اليمين */
+            background-color: rgba(44, 62, 80, 0.9); /* لون بخلفية شفافة */
+            backdrop-filter: blur(8px); /* تأثير بلور على الخلفية */
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 20px; 
+            text-align: right; 
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2); 
+            display: flex; 
+            flex-direction: column; 
+        }
+
+        .sidebar .sidebar-title {
+            color: #ecf0f1; 
+            padding: 10px 25px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: right; 
+        }
+
+        .sidebar .closebtn {
+            position: absolute;
+            top: 10px; 
+            left: 25px; 
+            font-size: 36px;
+            color: #ecf0f1;
+            cursor: pointer;
+            padding: 5px; 
+        }
+
+        #searchSurah {
+            width: calc(100% - 50px);
+            padding: 10px;
+            margin: 0 25px 15px 25px; 
+            border: 1px solid #7f8c8d;
+            border-radius: 5px;
+            background-color: rgba(52, 73, 94, 0.8); /* لون بخلفية شفافة */
+            color: #ecf0f1;
+            font-size: 1em;
+            box-sizing: border-box; 
+            text-align: right; 
+        }
+
+        #searchSurah::placeholder {
+            color: #bdc3c7;
+        }
+
+        .surahs-list {
+            flex-grow: 1; 
+            overflow-y: auto; 
+            padding-bottom: 20px; 
+        }
+
+        .sidebar a {
+            padding: 12px 25px; 
+            text-decoration: none;
+            font-size: 1.1em; 
+            color: #bdc3c7; 
+            display: block;
+            transition: 0.3s;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05); 
+            text-align: right; 
+        }
+
+        .sidebar a:hover {
+            color: #f1c40f; 
+            background-color: rgba(52, 73, 94, 0.7); /* لون بخلفية شفافة عند الهوفر */
+        }
+
+        .main-content {
+            transition: margin-right .5s; 
+            padding: 20px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* شريط الهيدر العلوي الأصلي */
+        .header-controls {
+            width: 100%;
+            display: flex;
+            justify-content: space-between; /* الأزرار على الطرفين */
+            align-items: center;
+            margin-bottom: 20px;
+            max-width: 900px; 
+            padding: 0 10px;
+            box-sizing: border-box;
+        }
+
+        /* زر فتح القائمة (القرآن) - على الشمال */
+        .open-sidebar-btn {
+            font-size: 30px;
+            cursor: pointer;
+            color: #2e7d32;
+            background: none;
+            border: none;
+            padding: 0;
+            margin-left: 15px; 
+            display: block;
+            order: 1; 
+        }
+
+        /* زر الصوت - على اليمين */
+        .audio-controls {
+            margin-right: 15px; 
+            display: flex;
+            justify-content: flex-end; 
+            order: 2; 
+        }
+
+        /* ستايل زر الصوت */
+        #toggleAudioButton {
+            background-color: #607D8B; 
+            color: white;
+            padding: 10px 20px; 
+            border: none;
+            border-radius: 25px; 
+            font-size: 1.1em; 
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            display: flex; 
+            align-items: center;
+            justify-content: center;
+            gap: 8px; 
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+            min-width: 120px; 
+            font-family: 'Amiri', serif; 
+            font-weight: bold; 
+        }
+
+        #toggleAudioButton:hover {
+            background-color: #546E7A; 
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        #toggleAudioButton:active {
+            background-color: #455A64;
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        #toggleAudioButton .fas {
+            font-size: 1.2em; 
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.6); 
+            backdrop-filter: blur(8px); 
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 900px; 
+            width: 100%;
+            z-index: 1;
+            box-sizing: border-box; 
+            border: 1px solid rgba(255, 255, 255, 0.3); 
+        }
+
+        .person-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 20px;
+            border: 3px solid #4CAF50;
+        }
+
+        h1 {
+            color: #2e7d32;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 1.1em;
+            margin-bottom: 25px;
+        }
+
+        /* --- الأنماط لمربعات الذكر وتأثيرها المتجاوب --- */
+        .tasbeeh-items-wrapper {
+            display: flex; 
+            flex-wrap: wrap; 
+            justify-content: center; 
+            gap: 20px; 
+            width: 100%;
+            margin-top: 20px; 
+            padding: 0 10px; 
+            box-sizing: border-box;
+        }
+
+        .tasbeeh-item {
+            background-color: rgba(255, 255, 255, 0.4); 
+            backdrop-filter: blur(8px); 
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.5); 
+            flex: 1 1 280px; 
+            max-width: calc(33.33% - 20px); 
+            min-width: 200px; 
+            box-sizing: border-box;
+            display: flex; 
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tasbeeh-icon {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            margin-bottom: 15px;
+        }
+
+        .tasbeeh-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2em;
+            cursor: pointer;
+            margin: 10px auto;
+            width: calc(100% - 20px); 
+            max-width: 250px; 
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            display: block;
+            font-family: 'Amiri', serif; 
+        }
+
+        .tasbeeh-button:hover {
+            background-color: #45a049;
+            transform: translateY(-2px);
+        }
+
+        .tasbeeh-button:active {
+            background-color: #3e8e41;
+            transform: translateY(0);
+        }
+
+        .counter {
+            font-size: 1.5em;
+            color: #2e7d32;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        .completion-message {
+            color: #d32f2f;
+            font-weight: bold;
+            margin-top: 15px;
+            display: none;
+        }
+
+        /* --- Sticky Header (الشريط العلوي الثابت) --- */
+        .sticky-header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background-color: rgba(44, 62, 80, 0.85); /* خلفية داكنة شفافة */
+            backdrop-filter: blur(5px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            z-index: 100;
+            display: none; /* مخفي افتراضيًا */
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            box-sizing: border-box;
+            transition: top 0.3s ease-in-out;
+            height: 60px; /* ارتفاع ثابت */
+        }
+
+        .sticky-header .sticky-btn {
+            font-size: 24px;
+            color: #ecf0f1;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0;
+            transition: transform 0.2s ease;
+        }
+
+        .sticky-header .sticky-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .sticky-header .sticky-btn.audio-btn {
+            margin-right: 15px; /* مسافة من اليمين عشان يبقى على اليمين */
+        }
+
+        .sticky-header .sticky-btn.menu-btn {
+            margin-left: 15px; /* مسافة من الشمال عشان يبقى على الشمال */
+        }
+
+        /* --- Media Queries للتصميم المتجاوب --- */
+
+        /* شاشات الموبايل (أقل من 600px) */
+        @media screen and (max-width: 600px) {
+            .sidebar {
+                width: 0; 
+                right: 0; 
+                padding-top: 15px;
+            }
+            .sidebar.open { 
+                width: 80%; 
+            }
+            .sidebar .closebtn {
+                left: 15px; 
+            }
+            #searchSurah {
+                width: calc(100% - 30px);
+                margin: 0 15px 15px 15px;
+            }
+
+            .main-content {
+                margin-right: 0 !important; 
+                padding: 10px;
+            }
+            .header-controls {
+                padding: 0 5px;
+                justify-content: space-between; 
+            }
+            /* ترتيب الأزرار على الموبايل في الهيدر الأصلي */
+            .open-sidebar-btn {
+                font-size: 25px;
+                margin-left: 5px; 
+                margin-right: 0; 
+                order: 1; 
+            }
+            .audio-controls {
+                margin-right: 5px; 
+                margin-left: 0; 
+                order: 2; 
+            }
+            #toggleAudioButton {
+                padding: 8px 15px;
+                font-size: 1em;
+                min-width: 100px;
+            }
+            #toggleAudioButton .fas {
+                font-size: 1em;
+            }
+            .tasbeeh-button {
+                padding: 12px 20px;
+                font-size: 1.1em;
+                max-width: 100%;
+            }
+            .tasbeeh-item {
+                flex: 1 1 100%; 
+                max-width: 100%; 
+                margin-bottom: 15px;
+                padding: 15px;
+            }
+            .tasbeeh-icon {
+                width: 40px;
+                height: 40px;
+            }
+            .container {
+                padding: 20px 15px;
+            }
+
+            /* إظهار الـ sticky header على الموبايل */
+            .sticky-header {
+                display: flex; /* يظهر فقط على الشاشات الصغيرة */
+            }
+        }
+
+        /* شاشات التابلت (بين 601px و 992px) */
+        @media screen and (min-width: 601px) and (max-width: 992px) {
+            .sidebar {
+                width: 0; 
+                right: 0; 
+            }
+            .sidebar.open { 
+                width: 300px;
+            }
+            .main-content {
+                margin-right: 0; 
+            }
+            .tasbeeh-item {
+                flex: 1 1 calc(50% - 30px); 
+                max-width: calc(50% - 20px); 
+            }
+            .container {
+                max-width: 700px; 
+            }
+            /* ترتيب الأزرار على التابلت زي الموبايل */
+            .open-sidebar-btn {
+                order: 1; 
+            }
+            .audio-controls {
+                order: 2; 
+            }
+
+            /* إظهار الـ sticky header على التابلت */
+            .sticky-header {
+                display: flex; /* يظهر فقط على الشاشات الصغيرة والمتوسطة */
+            }
+        }
+
+        /* شاشات الكمبيوتر (أكبر من 993px) */
+        @media screen and (min-width: 993px) {
+            .sidebar {
+                width: 320px; 
+                right: 0; 
+            }
+            .main-content {
+                margin-right: 320px; 
+            }
+            .tasbeeh-item {
+                flex: 1 1 calc(33.33% - 20px); 
+                max-width: calc(33.33% - 20px);
+            }
+            .container {
+                max-width: 960px; 
+            }
+            /* ترتيب الأزرار على الكمبيوتر */
+            .open-sidebar-btn {
+                order: 1; 
+            }
+            .audio-controls {
+                order: 2; 
+            }
+
+            /* إخفاء الـ sticky header على الكمبيوتر */
+            .sticky-header {
+                display: none !important; /* إخفائه تمامًا على شاشات الكمبيوتر */
+            }
+        }
+        /*
+        **********************************************************
+        ** نهاية أكواد CSS (التصميم)                 **
+        **********************************************************
+        */
+    </style>
+</head>
+<body>
+    <audio id="backgroundAudio" controls autoplay loop style="display:none;">
+        <source src="audio/001.mp3" type="audio/mpeg"> متصفحك لا يدعم تشغيل الصوت.
+    </audio>
+
+    <div id="mySidebar" class="sidebar">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        <h2 class="sidebar-title">القرآن الكريم كاملاً</h2>
+        <input type="text" id="searchSurah" onkeyup="filterSurahs()" placeholder="ابحث عن سورة...">
+        <div class="surahs-list" id="surahsList">
+            </div>
+    </div>
+
+    <div class="sticky-header" id="stickyHeader">
+        <button class="sticky-btn menu-btn" onclick="openNav()">
+            <i class="fas fa-bars"></i>
+        </button>
+        <button class="sticky-btn audio-btn" id="stickyToggleAudioButton">
+            <i class="fas fa-volume-up"></i>
+        </button>
+    </div>
+
+    <div id="main" class="main-content">
+        <div class="header-controls">
+            <button class="open-sidebar-btn" onclick="openNav()">&#9776;</button>
+            <div class="audio-controls">
+                <button id="toggleAudioButton">
+                    <i class="fas fa-volume-up"></i>
+                    <span>Pause</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="container">
+            <h1>صدقة جارية على روح الفقيد/ة</h1>
+            <img src="https://via.placeholder.com/150" alt="صورة الفقيد/ة" class="person-image" id="personImage">
+            <p>اذكر/ي الله وادعُ له بالرحمة والمغفرة</p>
+
+            <div class="tasbeeh-items-wrapper">
+                <div class="tasbeeh-item">
+                    <img src="beads_icon.png" alt="أيقونة سبحة" class="tasbeeh-icon">
+                    <button class="tasbeeh-button" id="istighfarButton">استغفر الله</button>
+                    <div class="counter" id="istighfarCounter">0 / 100</div>
+                    <div class="completion-message" id="istighfarDone">لقد أتممت 100 استغفار! جزاك الله خيرًا.</div>
+                </div>
+                
+                <div class="tasbeeh-item">
+                    <img src="beads_icon.png" alt="أيقونة سبحة" class="tasbeeh-icon">
+                    <button class="tasbeeh-button" id="hamdButton">الحمد لله</button>
+                    <div class="counter" id="hamdCounter">0 / 100</div>
+                    <div class="completion-message" id="hamdDone">لقد أتممت 100 تحميدة! جزاك الله خيرًا.</div>
+                </div>
+
+                <div class="tasbeeh-item">
+                    <img src="beads_icon.png" alt="أيقونة سبحة" class="tasbeeh-icon">
+                    <button class="tasbeeh-button" id="tasbeehButton">سبحان الله</button>
+                    <div class="counter" id="tasbeehCounter">0 / 100</div>
+                    <div class="completion-message" id="tasbeehDone">لقد أتممت 100 تسبيحة! جزاك الله خيرًا.</div>
+                </div>
+
+                <div class="tasbeeh-item">
+                    <img src="beads_icon.png" alt="أيقونة سبحة" class="tasbeeh-icon">
+                    <button class="tasbeeh-button" id="takbeerButton">الله أكبر</button>
+                    <div class="counter" id="takbeerCounter">0 / 100</div>
+                    <div class="completion-message" id="takbeerDone">لقد أتممت 100 تكبيرة! جزاك الله خيرًا.</div>
+                </div>
+
+                <div class="tasbeeh-item">
+                    <img src="beads_icon.png" alt="أيقونة سبحة" class="tasbeeh-icon">
+                    <button class="tasbeeh-button" id="tahlilButton">لا إله إلا الله</button>
+                    <div class="counter" id="tahlilCounter">0 / 100</div>
+                    <div class="completion-message" id="tahlilDone">لقد أتممت 100 تهليلة! جزاك الله خيرًا.</div>
+                </div>
+            </div> </div>
+    </div>
+
+    <script>
+        /*
+        **********************************************************
+        ** بداية أكواد JavaScript (المنطق)           **
+        **********************************************************
+        */
+        const maxCount = 100;
+
+        function setupTasbeeh(buttonId, counterId, messageId) {
+            const button = document.getElementById(buttonId);
+            const counterDisplay = document.getElementById(counterId);
+            const messageDisplay = document.getElementById(messageId);
+            let count = 0;
+
+            button.addEventListener('click', () => {
+                if (count < maxCount) {
+                    count++;
+                    counterDisplay.textContent = `${count} / ${maxCount}`;
+                    if (count === maxCount) {
+                        button.disabled = true;
+                        button.style.backgroundColor = '#ccc';
+                        messageDisplay.style.display = 'block';
+                    }
+                }
+            });
+        }
+
+        setupTasbeeh('istighfarButton', 'istighfarCounter', 'istighfarDone');
+        setupTasbeeh('hamdButton', 'hamdCounter', 'hamdDone');
+        setupTasbeeh('tasbeehButton', 'tasbeehCounter', 'tasbeehDone');
+        setupTasbeeh('takbeerButton', 'takbeerCounter', 'takbeerDone');
+        setupTasbeeh('tahlilButton', 'tahlilCounter', 'tahlilDone');
+
+        // استبدل هذا المسار بمسار صورة الشخص المتوفى الحقيقية
+        document.getElementById('personImage').src = 'مسار/صورة/الشخص.jpg'; 
+
+        // --- JavaScript للتحكم في القائمة الجانبية (Sidebar) ---
+        function openNav() {
+            const sidebar = document.getElementById("mySidebar");
+            const mainContent = document.getElementById("main");
+
+            // نحدد العرض بناءً على حجم الشاشة
+            if (window.innerWidth <= 992) { // موبايل وتابلت (أقل من حجم الكمبيوتر)
+                sidebar.style.width = "80%"; 
+                mainContent.style.marginRight = "0"; 
+            } else { // شاشات الكمبيوتر (أكبر من 993px)
+                sidebar.style.width = "320px";
+                mainContent.style.marginRight = "320px";
+            }
+            sidebar.classList.add('open'); 
+        }
+
+        function closeNav() {
+            const sidebar = document.getElementById("mySidebar");
+            const mainContent = document.getElementById("main");
+            
+            sidebar.style.width = "0";
+            mainContent.style.marginRight = "0"; 
+            sidebar.classList.remove('open'); 
+        }
+
+        // --- JavaScript للتحكم في الصوت ---
+        const backgroundAudio = document.getElementById('backgroundAudio');
+        const toggleAudioButton = document.getElementById('toggleAudioButton'); // الزرار الأصلي
+        const stickyToggleAudioButton = document.getElementById('stickyToggleAudioButton'); // الزرار في الـ sticky header
+
+        const audioIconMain = toggleAudioButton.querySelector('.fas');
+        const audioTextMain = toggleAudioButton.querySelector('span');
+        const audioIconSticky = stickyToggleAudioButton.querySelector('.fas');
+
+        let isPlaying = true; // لتتبع حالة التشغيل
+
+        // دالة لتحديث حالة أزرار الصوت (الأصلي والـ Sticky)
+        function updateAudioButtonState() {
+            if (isPlaying) {
+                audioIconMain.className = 'fas fa-volume-up';
+                audioTextMain.textContent = 'Pause';
+                audioIconSticky.className = 'fas fa-volume-up';
+            } else {
+                audioIconMain.className = 'fas fa-volume-mute';
+                audioTextMain.textContent = 'Play';
+                audioIconSticky.className = 'fas fa-volume-mute';
+            }
+        }
+
+        // محاولة تشغيل الصوت تلقائياً عند تحميل الصفحة
+        window.addEventListener('load', () => {
+            backgroundAudio.play().catch(error => {
+                console.log("Audio autoplay was prevented. User interaction is needed.", error);
+                isPlaying = false;
+                updateAudioButtonState(); // تحديث الأزرار
+            });
+            updateAudioButtonState(); // تحديث الأزرار عند التحميل
+
+            // عند تحميل الصفحة، لو حجم الشاشة كمبيوتر، افتح السايدبار تلقائيًا
+            if (window.innerWidth >= 993) {
+                openNav();
+            } else {
+                closeNav(); 
+            }
+        });
+
+        // تشغيل/إيقاف الصوت العام للزر الأصلي
+        toggleAudioButton.addEventListener('click', () => {
+            if (isPlaying) {
+                backgroundAudio.pause();
+            } else {
+                backgroundAudio.play();
+            }
+            isPlaying = !isPlaying;
+            updateAudioButtonState(); // تحديث الأزرار بعد التغيير
+        });
+
+        // تشغيل/إيقاف الصوت العام لزر الـ Sticky Header
+        stickyToggleAudioButton.addEventListener('click', () => {
+            if (isPlaying) {
+                backgroundAudio.pause();
+            } else {
+                backgroundAudio.play();
+            }
+            isPlaying = !isPlaying;
+            updateAudioButtonState(); // تحديث الأزرار بعد التغيير
+        });
+
+        // --- قائمة السور كاملة (مهم: يجب أن تكون مسارات الصوت صحيحة) ---
+        const surahs = [
+            { name: "الفاتحة", number: "001", audio: "audio/001.mp3" },
+            { name: "البقرة", number: "002", audio: "audio/002.mp3" },
+            { name: "آل عمران", number: "003", audio: "audio/003.mp3" },
+            { name: "النساء", number: "004", audio: "audio/004.mp3" },
+            { name: "المائدة", number: "005", audio: "audio/005.mp3" },
+            { name: "الأنعام", number: "006", audio: "audio/006.mp3" },
+            { name: "الأعراف", number: "007", audio: "audio/007.mp3" },
+            { name: "الأنفال", number: "008", audio: "audio/008.mp3" },
+            { name: "التوبة", number: "009", audio: "audio/009.mp3" },
+            { name: "يونس", number: "010", audio: "audio/010.mp3" },
+            { name: "هود", number: "011", audio: "audio/011.mp3" },
+            { name: "يوسف", number: "012", audio: "audio/012.mp3" },
+            { name: "الرعد", number: "013", audio: "audio/013.mp3" },
+            { name: "إبراهيم", number: "014", audio: "audio/014.mp3" },
+            { name: "الحجر", number: "015", audio: "audio/015.mp3" },
+            { name: "النحل", number: "016", audio: "audio/016.mp3" },
+            { name: "الإسراء", number: "017", audio: "audio/017.mp3" },
+            { name: "الكهف", number: "018", audio: "audio/018.mp3" },
+            { name: "مريم", number: "019", audio: "audio/019.mp3" },
+            { name: "طه", number: "020", audio: "audio/020.mp3" },
+            { name: "الأنبياء", number: "021", audio: "audio/021.mp3" },
+            { name: "الحج", number: "022", audio: "audio/022.mp3" },
+            { name: "المؤمنون", number: "023", audio: "audio/023.mp3" },
+            { name: "النور", number: "024", audio: "audio/024.mp3" },
+            { name: "الفرقان", number: "025", audio: "audio/025.mp3" },
+            { name: "الشعراء", number: "026", audio: "audio/026.mp3" },
+            { name: "النمل", number: "027", audio: "audio/027.mp3" },
+            { name: "القصص", number: "028", audio: "audio/028.mp3" },
+            { name: "العنكبوت", number: "029", audio: "audio/029.mp3" },
+            { name: "الروم", number: "030", audio: "audio/030.mp3" },
+            { name: "لقمان", number: "031", audio: "audio/031.mp3" },
+            { name: "السجدة", number: "032", audio: "audio/032.mp3" },
+            { name: "الأحزاب", number: "033", audio: "audio/033.mp3" },
+            { name: "سبأ", number: "034", audio: "audio/034.mp3" },
+            { name: "فاطر", number: "035", audio: "audio/035.mp3" },
+            { name: "يس", number: "036", audio: "audio/036.mp3" },
+            { name: "الصافات", number: "037", audio: "audio/037.mp3" },
+            { name: "ص", number: "038", audio: "audio/038.mp3" },
+            { name: "الزمر", number: "039", audio: "audio/039.mp3" },
+            { name: "غافر", number: "040", audio: "audio/040.mp3" },
+            { name: "فصلت", number: "041", audio: "audio/041.mp3" },
+            { name: "الشورى", number: "042", audio: "audio/042.mp3" },
+            { name: "الزخرف", number: "043", audio: "audio/043.mp3" },
+            { name: "الدخان", number: "044", audio: "audio/044.mp3" },
+            { name: "الجاثية", number: "045", audio: "audio/045.mp3" },
+            { name: "الأحقاف", number: "046", audio: "audio/046.mp3" },
+            { name: "محمد", number: "047", audio: "audio/047.mp3" },
+            { name: "الفتح", number: "048", audio: "audio/048.mp3" },
+            { name: "الحجرات", number: "049", audio: "audio/049.mp3" },
+            { name: "ق", number: "050", audio: "audio/050.mp3" },
+            { name: "الذاريات", number: "051", audio: "audio/051.mp3" },
+            { name: "الطور", number: "052", audio: "audio/052.mp3" },
+            { name: "النجم", number: "053", audio: "audio/053.mp3" },
+            { name: "القمر", number: "054", audio: "audio/054.mp3" },
+            { name: "الرحمن", number: "055", audio: "audio/055.mp3" },
+            { name: "الواقعة", number: "056", audio: "audio/056.mp3" },
+            { name: "الحديد", number: "057", audio: "audio/057.mp3" },
+            { name: "المجادلة", number: "058", audio: "audio/058.mp3" },
+            { name: "الحشر", number: "059", audio: "audio/059.mp3" },
+            { name: "الممتحنة", number: "060", audio: "audio/060.mp3" },
+            { name: "الصف", number: "061", audio: "audio/061.mp3" },
+            { name: "الجمعة", number: "062", audio: "audio/062.mp3" },
+            { name: "المنافقون", number: "063", audio: "audio/063.mp3" },
+            { name: "التغابن", number: "064", audio: "audio/064.mp3" },
+            { name: "الطلاق", number: "065", audio: "audio/065.mp3" },
+            { name: "التحريم", number: "066", audio: "audio/066.mp3" },
+            { name: "الملك", number: "067", audio: "audio/067.mp3" },
+            { name: "القلم", number: "068", audio: "audio/068.mp3" },
+            { name: "الحاقة", number: "069", audio: "audio/069.mp3" },
+            { name: "المعارج", number: "070", audio: "audio/070.mp3" },
+            { name: "نوح", number: "071", audio: "audio/071.mp3" },
+            { name: "الجن", number: "072", audio: "audio/072.mp3" },
+            { name: "المزمل", number: "073", audio: "audio/073.mp3" },
+            { name: "المدثر", number: "074", audio: "audio/074.mp3" },
+            { name: "القيامة", number: "075", audio: "audio/075.mp3" },
+            { name: "الإنسان", number: "076", audio: "audio/076.mp3" },
+            { name: "المرسلات", number: "077", audio: "audio/077.mp3" },
+            { name: "النبأ", number: "078", audio: "audio/078.mp3" },
+            { name: "النازعات", number: "079", audio: "audio/079.mp3" },
+            { name: "عبس", number: "080", audio: "audio/080.mp3" },
+            { name: "التكوير", number: "081", audio: "audio/081.mp3" },
+            { name: "الإنفطار", number: "082", audio: "audio/082.mp3" },
+            { name: "المطففين", number: "083", audio: "audio/083.mp3" },
+            { name: "الإنشقاق", number: "084", audio: "audio/084.mp3" },
+            { name: "البروج", number: "085", audio: "audio/085.mp3" },
+            { name: "الطارق", number: "086", audio: "audio/086.mp3" },
+            { name: "الأعلى", number: "087", audio: "audio/087.mp3" },
+            { name: "الغاشية", number: "088", audio: "audio/088.mp3" },
+            { name: "الفجر", number: "089", audio: "audio/089.mp3" },
+            { name: "البلد", number: "090", audio: "audio/090.mp3" },
+            { name: "الشمس", number: "091", audio: "audio/091.mp3" },
+            { name: "الليل", number: "092", audio: "audio/092.mp3" },
+            { name: "الضحى", number: "093", audio: "audio/093.mp3" },
+            { name: "الشرح", number: "094", audio: "audio/094.mp3" },
+            { name: "التين", number: "095", audio: "audio/095.mp3" },
+            { name: "العلق", number: "096", audio: "audio/096.mp3" },
+            { name: "القدر", number: "097", audio: "audio/097.mp3" },
+            { name: "البينة", number: "098", audio: "audio/098.mp3" },
+            { name: "الزلزلة", number: "099", audio: "audio/099.mp3" },
+            { name: "العاديات", number: "100", audio: "audio/100.mp3" },
+            { name: "القارعة", number: "101", audio: "audio/101.mp3" },
+            { name: "التكاثر", number: "102", audio: "audio/102.mp3" },
+            { name: "العصر", number: "103", audio: "audio/103.mp3" },
+            { name: "الهمزة", number: "104", audio: "audio/104.mp3" },
+            { name: "الفيل", number: "105", audio: "audio/105.mp3" },
+            { name: "قريش", number: "106", audio: "audio/106.mp3" },
+            { name: "الماعون", number: "107", audio: "audio/107.mp3" },
+            { name: "الكوثر", number: "108", audio: "audio/108.mp3" },
+            { name: "الكافرون", number: "109", audio: "audio/109.mp3" },
+            { name: "النصر", number: "110", audio: "audio/110.mp3" },
+            { name: "المسد", number: "111", audio: "audio/111.mp3" },
+            { name: "الإخلاص", number: "112", audio: "audio/112.mp3" },
+            { name: "الفلق", number: "113", audio: "audio/113.mp3" },
+            { name: "الناس", number: "114", audio: "audio/114.mp3" }
+        ];
+
+        const surahsListDiv = document.getElementById('surahsList');
+        const searchSurahInput = document.getElementById('searchSurah');
+
+        // دالة لعرض السور في القائمة الجانبية
+        function displaySurahs(filterText = '') {
+            surahsListDiv.innerHTML = ''; 
+            const filteredSurahs = surahs.filter(surah => 
+                surah.name.includes(filterText) || surah.number.includes(filterText)
+            );
+
+            filteredSurahs.forEach(surah => {
+                const a = document.createElement('a');
+                a.href = "#";
+                a.dataset.src = surah.audio; 
+                a.textContent = `${surah.number}. ${surah.name}`; 
+                a.addEventListener('click', event => {
+                    event.preventDefault(); 
+                    const audioSrc = event.target.dataset.src; 
+                    if (audioSrc) {
+                        backgroundAudio.src = audioSrc; 
+                        backgroundAudio.load(); 
+                        backgroundAudio.play().catch(error => {
+                            console.log("Error playing selected audio:", error);
+                            alert('Failed to play the Surah. You might need to interact with the page first or there\'s an issue with the audio file.');
+                        });
+                        isPlaying = true; 
+                        updateAudioButtonState(); // تحديث الأيقونات بعد تغيير السورة
+                    }
+                    closeNav(); 
+                });
+                surahsListDiv.appendChild(a);
+            });
+        }
+
+        // دالة البحث في السور
+        function filterSurahs() {
+            const filterText = searchSurahInput.value.trim();
+            displaySurahs(filterText);
+        }
+
+        // عرض السور عند تحميل الصفحة لأول مرة
+        window.addEventListener('load', () => {
+            displaySurahs();
+        });
+
+        // تحديث عرض القائمة الجانبية عند تغيير حجم الشاشة (لضمان الاستجابة الصحيحة)
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 993 && document.getElementById("mySidebar").style.width !== "0px") { 
+                openNav(); 
+            } else {
+                closeNav(); 
+            }
+        });
+
+        // --- JavaScript للتحكم في الـ Sticky Header ---
+        const stickyHeader = document.getElementById('stickyHeader');
+        let initialHeaderOffset;
+
+        // نحسب الـ offset بتاع الهيدر الأصلي بعد تحميل الصفحة
+        window.addEventListener('load', () => {
+            const headerControls = document.querySelector('.header-controls');
+            if (headerControls) {
+                initialHeaderOffset = headerControls.offsetTop;
+            }
+        });
+
+        window.onscroll = function() {
+            // نتحقق إننا على شاشة موبايل أو تابلت قبل ما نظهر الـ sticky header
+            if (window.innerWidth <= 992) {
+                if (window.pageYOffset > initialHeaderOffset) {
+                    stickyHeader.style.top = "0";
+                } else {
+                    stickyHeader.style.top = "-70px"; /* اخفائه لأعلى */
+                }
+            } else {
+                stickyHeader.style.top = "-70px"; /* إخفاءه دائمًا على الكمبيوتر */
+            }
+        };
+
+        /*
+        **********************************************************
+        ** نهاية أكواد JavaScript (المنطق)           **
+        **********************************************************
+        */
+    </script>
+</body>
+</html>
