@@ -1,0 +1,785 @@
+/*
+**********************************************************
+** بداية أكواد CSS (التصميم)                 **
+**********************************************************
+*/
+
+/* استخدام المتغيرات (CSS Variables) */
+:root {
+    --primary-color: #4CAF50; /* لون أخضر أساسي */
+    --primary-hover-color: #45a049;
+    --primary-active-color: #3e8e41;
+
+    --secondary-color: #2196F3; /* لون أزرق ثانوي */
+    --secondary-hover-color: #1976D2;
+    --secondary-active-color: #1565C0;
+
+    --dark-bg-color: rgba(44, 62, 80, 0.7); /* لون خلفية داكن للسايدبار */
+    --dark-bg-hover: rgba(52, 73, 94, 0.5);
+    --dark-bg-active: rgba(52, 73, 94, 0.7);
+
+    --light-bg-overlay: rgba(255, 255, 255, 0.5); /* شفافية بيضاء للخلفية الرئيسية */
+    --container-bg-color: rgba(255, 255, 255, 0.6); /* خلفية الكونتينر */
+    --item-bg-color: rgba(255, 255, 255, 0.5); /* خلفية عناصر التسبيح والأدعية */
+
+    --text-light: #ecf0f1; /* لون نص فاتح */
+    --text-dark: #333; /* لون نص داكن */
+    --text-medium: #444;
+    --text-gray: #777;
+    --text-highlight: #f1c40f; /* لون مميز (أصفر) */
+    --text-error: #d32f2f; /* لون رسالة الخطأ/الانتهاء */
+
+    --border-light: rgba(255, 255, 255, 0.4); /* حدود فاتحة شفافة */
+    --border-medium: rgba(255, 255, 255, 0.7);
+    --border-dark: rgba(0, 0, 0, 0.1);
+    --border-sidebar: rgba(255, 255, 255, 0.1);
+    --border-sidebar-item: rgba(255, 255, 255, 0.08);
+
+    --shadow-light: 0 4px 8px rgba(0, 0, 0, 0.1);
+    --shadow-medium: 0 6px 15px rgba(0, 0, 0, 0.15);
+    --shadow-strong: 0 2px 10px rgba(0, 0, 0, 0.3);
+    --shadow-inset: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+
+    --blur-strong: blur(12px);
+    --blur-medium: blur(10px);
+    --blur-light: blur(8px);
+    --blur-button: blur(15px);
+
+    --transition-speed: 0.3s ease;
+    --transition-fast: 0.2s ease;
+
+    --border-radius-small: 8px;
+    --border-radius-medium: 10px;
+    --border-radius-large: 15px;
+    --border-radius-round: 30px;
+    --border-radius-circle: 50%;
+}
+
+body {
+    font-family: 'Amiri', serif;
+    background-color: var(--light-bg-overlay);
+    color: var(--text-dark);
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    /* التعديل الجديد هنا: إضافة الصورة الثانية للخلفية */
+    background-image: url('quran_bg.jpg'), url('islamic_pattern.png');
+    background-size: cover, auto; /* الخلفية الأولى (quran_bg.jpg) تغطي، الخلفية الثانية (النمط) بحجمها الطبيعي */
+    background-position: center center, center center; /* توسيط الخلفيتين */
+    background-repeat: no-repeat, repeat; /* الخلفية الأولى لا تتكرر، الخلفية الثانية تتكرر */
+    background-attachment: fixed, fixed; /* تثبيت الخلفيتين عند التمرير */
+    position: relative;
+}
+
+body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* تقليل شفافية الطبقة البيضاء للسماح بظهور النمط */
+    background-color: rgba(255, 255, 255, 0.3);
+    z-index: -1;
+}
+
+/* تنسيق القائمة الجانبية (Sidebar) */
+.sidebar {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 10;
+    top: 0;
+    right: 0;
+    background-color: var(--dark-bg-color);
+    backdrop-filter: var(--blur-strong);
+    overflow-x: hidden;
+    transition: width 0.5s ease, box-shadow 0.5s ease;
+    padding-top: 20px;
+    text-align: right;
+    box-shadow: -8px 0 20px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    border-left: 1px solid var(--border-sidebar);
+}
+
+.sidebar .sidebar-title {
+    color: var(--text-light);
+    padding: 10px 25px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    text-align: right;
+    font-size: 1.6em;
+    font-weight: bold;
+}
+
+.sidebar .closebtn {
+    position: absolute;
+    top: 10px;
+    left: 25px;
+    font-size: 40px;
+    color: var(--text-light);
+    cursor: pointer;
+    padding: 5px;
+    transition: transform var(--transition-fast), color var(--transition-speed);
+}
+.sidebar .closebtn:hover {
+    color: var(--text-highlight);
+    transform: rotate(90deg);
+}
+.sidebar .closebtn:active {
+    transform: scale(0.9) rotate(90deg);
+}
+
+.surahs-list {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding-bottom: 20px;
+    /* شريط التمرير مخصص لمتصفحات الويب كيت (Chrome, Safari) */
+    &::-webkit-scrollbar {
+        width: 8px;
+    }
+    &::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: var(--border-radius-medium);
+    }
+    &::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: var(--border-radius-medium);
+    }
+    &::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.5);
+    }
+}
+
+.sidebar a {
+    padding: 12px 25px;
+    text-decoration: none;
+    font-size: 1.15em;
+    color: #bdc3c7;
+    display: block;
+    transition: var(--transition-speed);
+    border-bottom: 1px solid var(--border-sidebar-item);
+    text-align: right;
+}
+
+.sidebar a:hover {
+    color: var(--text-highlight);
+    background-color: var(--dark-bg-hover);
+    transform: translateX(-5px);
+}
+/* تأثير النقر على روابط السايدبار */
+.sidebar a:active {
+    transform: scale(0.98);
+    background-color: var(--dark-bg-active);
+}
+
+/* Overlay لإغلاق القائمة عند الضغط خارجها */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9;
+    display: none;
+    transition: opacity var(--transition-speed);
+    opacity: 0;
+}
+.overlay.active {
+    opacity: 1;
+}
+
+.main-content {
+    transition: margin-right .5s;
+    padding: 20px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* شريط الهيدر العلوي الأصلي */
+.header-controls {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    max-width: 900px;
+    padding: 0 10px;
+    box-sizing: border-box;
+    gap: 15px;
+}
+
+/* ستايل الأزرار العامة في الهيدر (اسم السورة وزر الصوت) */
+.header-button {
+    backdrop-filter: var(--blur-button);
+    border: 1px solid var(--border-light);
+    border-radius: var(--border-radius-round);
+    font-size: 1.1em;
+    cursor: pointer;
+    padding: 10px 20px;
+    transition: background-color var(--transition-speed), border-color var(--transition-speed), transform var(--transition-fast), box-shadow var(--transition-speed), color var(--transition-speed);
+    box-shadow: var(--shadow-light);
+    font-family: 'Amiri', serif;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.header-button:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-medium);
+}
+.header-button:active {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* تعديل خاص لزر السورة ليكون أكبر قليلاً وبلون مميز */
+.open-sidebar-btn {
+    flex-grow: 1;
+    max-width: 60%;
+    font-size: 1.3em;
+    background-color: rgba(46, 125, 50, 0.6);
+    color: var(--text-light);
+    border-color: rgba(46, 125, 50, 0.9);
+}
+.open-sidebar-btn:hover {
+    background-color: rgba(46, 125, 50, 0.8);
+    border-color: rgba(46, 125, 50, 1);
+    color: #ffffff;
+}
+.open-sidebar-btn:active {
+    background-color: rgba(30, 90, 35, 0.8);
+    border-color: rgba(30, 90, 35, 1);
+}
+
+/* تعديل خاص لزر الصوت ليكون له عرض ثابت وبلون مميز */
+.audio-controls .header-button {
+    width: 120px;
+    background-color: rgba(33, 150, 243, 0.6);
+    color: var(--text-light);
+    border-color: rgba(33, 150, 243, 0.9);
+}
+.audio-controls .header-button:hover {
+    background-color: rgba(33, 150, 243, 0.8);
+    border-color: rgba(33, 150, 243, 1);
+    color: #ffffff;
+}
+.audio-controls .header-button:active {
+    background-color: rgba(15, 100, 200, 0.8);
+    border-color: rgba(15, 100, 200, 1);
+}
+
+.container {
+    background-color: var(--container-bg-color);
+    backdrop-filter: var(--blur-light);
+    padding: 30px;
+    border-radius: var(--border-radius-large);
+    box-shadow: var(--shadow-light);
+    max-width: 900px;
+    width: 100%;
+    z-index: 1;
+    box-sizing: border-box;
+    border: 1px solid var(--border-medium);
+}
+
+.person-image {
+    width: 150px;
+    height: 150px;
+    border-radius: var(--border-radius-circle);
+    object-fit: cover;
+    margin-bottom: 20px;
+    border: 3px solid var(--primary-color);
+}
+
+h1 {
+    color: #2e7d32;
+    margin-bottom: 10px;
+}
+
+p {
+    font-size: 1.1em;
+    margin-bottom: 25px;
+}
+
+/* --- الأنماط لمربعات الذكر وتأثيرها المتجاوب --- */
+.tasbeeh-items-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    width: 100%;
+    margin-top: 20px;
+    padding: 0 10px;
+    box-sizing: border-box;
+}
+
+.tasbeeh-item {
+    background-color: var(--item-bg-color);
+    backdrop-filter: var(--blur-medium);
+    border-radius: var(--border-radius-medium);
+    padding: 20px;
+    box-shadow: 0 2px 5px var(--border-dark);
+    border: 1px solid var(--border-medium);
+    flex: 1 1 280px;
+    max-width: calc(33.33% - 20px);
+    min-width: 200px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.tasbeeh-icon {
+    width: 70px;
+    height: 70px;
+    object-fit: contain;
+    margin-bottom: 15px;
+}
+
+.tasbeeh-button {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 15px 25px;
+    border: none;
+    border-radius: var(--border-radius-small);
+    font-size: 1.2em;
+    cursor: pointer;
+    margin: 10px auto;
+    width: calc(100% - 20px);
+    max-width: 250px;
+    transition: background-color var(--transition-speed), transform var(--transition-fast);
+    display: block;
+    font-family: 'Amiri', serif;
+}
+
+.tasbeeh-button:hover {
+    background-color: var(--primary-hover-color);
+    transform: translateY(-2px);
+}
+
+.tasbeeh-button:active {
+    background-color: var(--primary-active-color);
+    transform: translateY(0);
+}
+
+/* --- شريط التقدم (Progress Bar) بدلاً من العداد النصي --- */
+.progress-container {
+    width: 90%;
+    height: 20px;
+    background-color: #e0e0e0;
+    border-radius: var(--border-radius-medium);
+    margin-top: 15px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: var(--shadow-inset);
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0%;
+    background-color: var(--primary-color);
+    border-radius: var(--border-radius-medium);
+    text-align: center;
+    line-height: 20px;
+    color: white;
+    font-size: 0.9em;
+    transition: width var(--transition-speed);
+    position: relative;
+    z-index: 1;
+}
+
+.count-text {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--text-dark);
+    font-weight: bold;
+    font-size: 1em;
+    z-index: 2;
+    text-shadow: 0 0 3px rgba(255, 255, 255, 0.8);
+}
+
+.completion-message {
+    color: var(--text-error);
+    font-weight: bold;
+    margin-top: 15px;
+    display: none;
+}
+
+/* زر إعادة الضبط (Reset) */
+.reset-button {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: none;
+    border: none;
+    color: var(--text-gray);
+    font-size: 1.2em;
+    cursor: pointer;
+    padding: 5px;
+    transition: color var(--transition-speed), transform var(--transition-fast);
+    opacity: 0.7;
+}
+.reset-button:hover {
+    color: var(--text-error);
+    transform: scale(1.1);
+    opacity: 1;
+}
+.reset-button:active {
+    transform: scale(0.9);
+}
+
+/* --- Sticky Header (الشريط العلوي الثابت) --- */
+.sticky-header {
+    position: fixed;
+    top: -70px;
+    width: 100%;
+    background-color: var(--dark-bg-color);
+    backdrop-filter: var(--blur-strong);
+    box-shadow: var(--shadow-strong);
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    box-sizing: border-box;
+    transition: top 0.3s ease-in-out;
+    height: 60px;
+    visibility: hidden;
+    opacity: 0;
+    border-bottom: 1px solid var(--border-sidebar);
+}
+
+/* إظهار الـ sticky header على الشاشات الصغيرة والمتوسطة فقط */
+@media screen and (max-width: 992px) {
+    .sticky-header {
+        visibility: visible;
+        opacity: 1;
+    }
+}
+
+/* أزرار الـ sticky header تأخذ نفس ستايل الـ header-button */
+.sticky-header .open-sidebar-btn {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.4);
+    color: var(--text-light);
+    font-size: 1.3em;
+    padding: 8px 18px;
+    box-shadow: none;
+    min-width: 100px;
+    max-width: 60%;
+    flex-grow: 1;
+    backdrop-filter: var(--blur-light);
+}
+.sticky-header .open-sidebar-btn:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.6);
+    color: #ffffff;
+}
+.sticky-header .open-sidebar-btn:active {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.sticky-header .audio-btn {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.4);
+    color: var(--text-light);
+    font-size: 1.1em;
+    padding: 8px 18px;
+    box-shadow: none;
+    width: 100px;
+    backdrop-filter: var(--blur-light);
+}
+.sticky-header .audio-btn:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.6);
+    color: #ffffff;
+}
+.sticky-header .audio-btn:active {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* --- قسم الأدعية الجديدة --- */
+.duas-section {
+    margin-top: 40px;
+    padding: 30px;
+    background-color: var(--item-bg-color);
+    backdrop-filter: var(--blur-medium);
+    border-radius: var(--border-radius-large);
+    box-shadow: var(--shadow-light);
+    max-width: 900px;
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid var(--border-medium);
+    text-align: right;
+}
+
+.duas-section h2 {
+    color: #2e7d32;
+    margin-bottom: 25px;
+    font-size: 1.8em;
+    text-align: center;
+}
+
+.duas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    justify-content: center;
+}
+
+.dua-item {
+    background-color: var(--item-bg-color);
+    backdrop-filter: var(--blur-medium);
+    border-radius: var(--border-radius-medium);
+    padding: 20px;
+    box-shadow: 0 2px 5px var(--border-dark);
+    border: 1px solid var(--border-medium);
+    text-align: center;
+    font-size: 1.15em;
+    line-height: 1.6;
+    color: var(--text-medium);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dua-item p {
+    margin: 0;
+    margin-bottom: 15px;
+    color: var(--text-dark);
+    font-weight: normal;
+}
+
+.dua-button {
+    background-color: var(--secondary-color);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 25px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color var(--transition-speed), transform var(--transition-fast);
+    font-family: 'Amiri', serif;
+    margin-top: 10px;
+    display: block;
+    width: fit-content;
+    align-self: center;
+}
+
+.dua-button:hover {
+    background-color: var(--secondary-hover-color);
+    transform: translateY(-2px);
+}
+.dua-button:active {
+    background-color: var(--secondary-active-color);
+    transform: translateY(0);
+}
+
+/* --- الخط الفاصل (Divider) --- */
+.section-divider {
+    border: none;
+    height: 2px; /* سمك الخط */
+    background-color: var(--primary-color); /* استخدم لونك الأساسي */
+    width: 80%; /* عرض الخط */
+    max-width: 600px; /* أقصى عرض */
+    margin: 40px auto 30px auto; /* مسافات علوية وسفلية وتوسيط */
+    border-radius: 2px; /* حواف دائرية بسيطة */
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2); /* ظل بسيط */
+    opacity: 0.8;
+}
+
+/* --- قسم حقوق التصميم (Footer Design - بدون مربع) --- */
+.normal-footer-text {
+    margin-top: 20px;
+    margin-bottom: 30px;
+    font-size: 1.1em;
+    color: var(--text-dark); /* لون النص العادي للفوتر */
+    text-align: center;
+    padding: 10px 0; /* مسافة بسيطة من الأعلى والأسفل */
+    width: 100%;
+    max-width: 900px; /* ليأخذ نفس عرض المحتوى الرئيسي */
+    box-sizing: border-box;
+}
+
+.normal-footer-text p {
+    margin: 0;
+    padding: 0;
+    line-height: 1.5;
+    color: var(--text-dark); /* تأكيد لون النص */
+}
+
+.designer-name {
+    font-weight: bold;
+    color: var(--primary-color); /* لون مميز لاسم المصمم */
+    text-shadow: 0 0 3px rgba(0, 0, 0, 0.1); /* ظل خفيف على الاسم */
+}
+
+/* --- Media Queries للتصميم المتجاوب --- */
+
+/* شاشات الموبايل (أقل من 600px) */
+@media screen and (max-width: 600px) {
+    .sidebar {
+        width: 0;
+        right: 0;
+        padding-top: 15px;
+    }
+    .sidebar.open {
+        width: 90%;
+    }
+    .sidebar .closebtn {
+        left: 15px;
+    }
+
+    .main-content {
+        margin-right: 0 !important;
+        padding: 10px;
+    }
+    .header-controls {
+        padding: 0 5px;
+        justify-content: space-between;
+    }
+    .open-sidebar-btn {
+        font-size: 1.1em;
+        padding: 8px 15px;
+        max-width: 55%;
+    }
+    .audio-controls .header-button {
+        width: 100px;
+        padding: 8px 15px;
+    }
+    .tasbeeh-button {
+        padding: 12px 20px;
+        font-size: 1.1em;
+        max-width: 100%;
+    }
+    .tasbeeh-item {
+        flex: 1 1 100%;
+        max-width: 100%;
+        margin-bottom: 15px;
+        padding: 15px;
+    }
+    .tasbeeh-icon {
+        width: 60px;
+        height: 60px;
+    }
+    .container, .duas-section {
+        padding: 20px 15px;
+    }
+    .duas-grid {
+        grid-template-columns: 1fr;
+    }
+    .reset-button {
+        font-size: 1em;
+        top: 5px;
+        left: 5px;
+    }
+    .sticky-header {
+        height: 55px;
+        padding: 8px 15px;
+    }
+    .sticky-header .open-sidebar-btn,
+    .sticky-header .audio-btn {
+        font-size: 1em;
+        padding: 6px 12px;
+    }
+    .sticky-header .audio-btn {
+        width: 90px;
+    }
+    .section-divider {
+        width: 90%;
+        margin: 30px auto 20px auto;
+    }
+    .normal-footer-text { /* تطبيق التعديل على الفوتر في الموبايل */
+        padding: 8px 10px;
+        font-size: 1em;
+        margin-bottom: 20px;
+    }
+}
+
+/* شاشات التابلت (بين 601px و 992px) */
+@media screen and (min-width: 601px) and (max-width: 992px) {
+    .sidebar {
+        width: 0;
+        right: 0;
+    }
+    .sidebar.open {
+        width: 300px;
+    }
+    .main-content {
+        margin-right: 0;
+    }
+    .tasbeeh-item {
+        flex: 1 1 calc(50% - 30px);
+        max-width: calc(50% - 20px);
+    }
+    .container, .duas-section {
+        max-width: 700px;
+    }
+    .open-sidebar-btn {
+        order: 1;
+    }
+    .audio-controls {
+        order: 2;
+    }
+    .duas-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+    .section-divider {
+        width: 70%;
+    }
+}
+
+/* شاشات الكمبيوتر (أكبر من 993px) */
+@media screen and (min-width: 993px) {
+    .sidebar {
+        width: 320px;
+        right: 0;
+    }
+    .main-content {
+        margin-right: 320px;
+    }
+    .tasbeeh-item {
+        flex: 1 1 calc(33.33% - 20px);
+        max-width: calc(33.33% - 20px);
+    }
+    .container, .duas-section {
+        max-width: 960px;
+    }
+    .open-sidebar-btn {
+        order: 1;
+    }
+    .audio-controls {
+        order: 2;
+    }
+    .duas-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+}
+/*
+**********************************************************
+** نهاية أكواد CSS (التصميم)                 **
+**********************************************************
+*/

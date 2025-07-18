@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سبحة صدقة جارية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <audio id="backgroundAudio" controls autoplay loop style="display:none;">
+        <source src="https://server8.mp3quran.net/afs/001.mp3" type="audio/mpeg">
+        متصفحك لا يدعم تشغيل الصوت.
+    </audio>
+
+    <div id="mySidebar" class="sidebar">
+        <a href="#" class="closebtn" id="closeSidebarBtn">&times;</a>
+        <h2 class="sidebar-title">القرآن الكريم كاملاً</h2>
+        <div class="surahs-list" id="surahsList">
+        </div>
+    </div>
+
+    <div class="overlay" id="sidebarOverlay"></div>
+
+    <div class="sticky-header" id="stickyHeader">
+        <button class="header-button open-sidebar-btn" id="stickyOpenSidebarBtn">
+            الفاتحة
+        </button>
+        <button class="header-button audio-btn" id="stickyToggleAudioButton">
+            <span>Pause</span>
+        </button>
+    </div>
+
+    <div id="main" class="main-content">
+        <div class="header-controls">
+            <button class="header-button open-sidebar-btn" id="openSidebarBtn">الفاتحة</button>
+            <div class="audio-controls">
+                <button class="header-button" id="toggleAudioButton">
+                    <span id="audioButtonText">Pause</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="container">
+            <h1>صدقة جارية على روح الشهيد عبداللطيف شاهين</h1>
+            <img src="profile.jpg" alt="صورة الفقيد عبداللطيف شاهين" class="person-image" id="personImage">
+            <p>اذكر/ي الله وادعُ له بالرحمة والمغفرة</p>
+
+            <div class="tasbeeh-items-wrapper">
+                <div class="tasbeeh-item">
+                    <button class="reset-button" data-target="istighfar"><i class="fas fa-redo"></i></button>
+                    <img src="beads_icon.png" alt="أيقونة سبحة" class="tasbeeh-icon">
+                    <button class="tasbeeh-button" id="istighfarButton">استغفر الله</button>
+                    <div class="progress-container">
+                        <div class="progress-bar" id="istighfarProgressBar"></div>
+                        <div class="count-text" id="istighfarCountText">0 / 100</div>
+                    </div>
+                    <div class="completion-message" id="istighfarDone">لقد أتممت 100 استغفار! جزاك الله خيرًا.</div>
+                </div>
+
+                <div class="tasbeeh-item">
+                    <button class="reset-button" data-target="hamd"><i class="fas fa-redo"></i></button>
+                    <img src="beads_icon.png" alt="أيقونة سبحة" class="tasbeeh-icon">
+                    <button class="tasbeeh-button" id="hamdButton">الحمد لله</button>
+                    <div class="progress-container">
+                        <div class="progress-bar" id="hamdProgressBar"></div>
+                        <div class="count-text" id="hamdCountText">0 / 100</div>
+                    </div>
+                    <div class="completion-message" id="hamdDone">لقد أتممت 100 تحميدة! جزاك الله خيرًا.</div>
+                </div>
+
+                <div class="tasbeeh-item">
+                    <button class="reset-button" data-target="tasbeeh"><i class="fas fa-redo"></i></button>
+                    <img src="beads_icon.png" alt="أيقونة سبحة" class="tasbeeh-icon">
+                    <button class="tasbeeh-button" id="tasbeehButton">سبحان الله</button>
+                    <div class="progress-container">
+                        <div class="progress-bar" id="tasbeehProgressBar"></div>
+                        <div class="count-text" id="tasbeehCountText">0 / 100</div>
+                    </div>
+                    <div class="completion-message" id="tasbeehDone">لقد أتممت 100 تسبيحة! جزاك الله خيرًا.</div>
+                </div>
+
+                <div class="tasbeeh-item">
+                    <button class="reset-button" data-target="takbeer"><i class="fas fa-redo"></i></button>
+                    <img src="beads_icon.png" alt="أيقونة سبحة" class="tasbeeh-icon">
+                    <button class="tasbeeh-button" id="takbeerButton">الله أكبر</button>
+                    <div class="progress-container">
+                        <div class="progress-bar" id="takbeerProgressBar"></div>
+                        <div class="count-text" id="takbeerCountText">0 / 100</div>
+                    </div>
+                    <div class="completion-message" id="takbeerDone">لقد أتممت 100 تكبيرة! جزاك الله خيرًا.</div>
+                </div>
+
+                <div class="tasbeeh-item">
+                    <button class="reset-button" data-target="tahlil"><i class="fas fa-redo"></i></button>
+                    <img src="beads_icon.png" alt="أيقونة سبحة" class="tasbeeh-icon">
+                    <button class="tasbeeh-button" id="tahlilButton">لا إله إلا الله</button>
+                    <div class="progress-container">
+                        <div class="progress-bar" id="tahlilProgressBar"></div>
+                        <div class="count-text" id="tahlilCountText">0 / 100</div>
+                    </div>
+                    <div class="completion-message" id="tahlilDone">لقد أتممت 100 تهليلة! جزاك الله خيرًا.</div>
+                </div>
+
+                <div class="tasbeeh-item">
+                    <button class="reset-button" data-target="salah"><i class="fas fa-redo"></i></button>
+                    <img src="beads_icon.png" alt="أيقونة سبحة" class="tasbeeh-icon">
+                    <button class="tasbeeh-button" id="salahButton">اللهم صل على محمد</button>
+                    <div class="progress-container">
+                        <div class="progress-bar" id="salahProgressBar"></div>
+                        <div class="count-text" id="salahCountText">0 / 100</div>
+                    </div>
+                    <div class="completion-message" id="salahDone">لقد أتممت 100 صلاة على النبي! جزاك الله خيرًا.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="duas-section">
+            <h2>أدعية للشهيد عبداللطيف شاهين</h2>
+            <div class="duas-grid">
+                <div class="dua-item">
+                    <p>اللهم اغفر له وارحمه وعافه واعف عنه، وأكرم نزله ووسع مدخله، واغسله بالماء والثلج والبرد، ونقه من الخطايا كما نقيت الثوب الأبيض من الدنس، وأبدله دارًا خيرًا من داره، وأهلاً خيرًا من أهله، وزوجًا خيرًا من زوجه، وأدخله الجنة، وأعذه من عذاب القبر ومن عذاب النار.</p>
+                    <button class="dua-button">ادعُ بهذا الدعاء</button>
+                </div>
+                <div class="dua-item">
+                    <p>اللهم إن كان محسنًا فزد في إحسانه، وإن كان مسيئًا فتجاوز عن سيئاته، اللهم أنزله منازل الصديقين والشهداء والصالحين، وحسن أولئك رفيقًا.</p>
+                    <button class="dua-button">ادعُ بهذا الدعاء</button>
+                </div>
+                <div class="dua-item">
+                    <p>اللهم إنه عبدك وابن عبدك وابن أمتك، احتاج إلى رحمتك، وأنت غني عن عذابه، إن كان محسنًا فزد في حسناته، وإن كان مسيئًا فتجاوز عنه.</p>
+                    <button class="dua-button">ادعُ بهذا الدعاء</button>
+                </div>
+                <div class="dua-item">
+                    <p>اللهم اجعله في بطن القبر مطمئنًا، وعند قيام الأشهاد آمنًا، وبجود رضوانك واثقًا، وإلى أعلى الدرجات سابقًا.</p>
+                    <button class="dua-button">ادعُ بهذا الدعاء</button>
+                </div>
+                <div class="dua-item">
+                    <p>اللهم افسح له في قبره مد بصره، وافرش قبره من فراش الجنة، اللهم أعذه من عذاب القحيم، واجمعنا به في جنات النعيم.</p>
+                    <button class="dua-button">ادعُ بهذا الدعاء</button>
+                </div>
+                <div class="dua-item">
+                    <p>اللهم تجاوز عن سيئاته، واجعل قبره روضة من رياض الجنة، ولا تجعله حفرة من حفر النار، اللهم أنر له في قبره، واجعل القرآن رفيقه في وحدته.</p>
+                    <button class="dua-button">ادعُ بهذا الدعاء</button>
+                </div>
+            </div>
+        </div>
+
+        <hr class="section-divider">
+        <footer class="normal-footer-text">
+            <p>Page crafted with dedication by <span class="designer-name">Daredevil</span></p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
